@@ -45,7 +45,7 @@ export const createBackgroundStyle = (background: any): CSSProperties => {
       style.backgroundImage = `url('${background}')`;
       style.backgroundSize = 'cover';
       style.backgroundPosition = 'center';
-      backgroundRepeat: 'no-repeat';
+      style.backgroundRepeat = 'no-repeat';
     }
   }
   return style;
