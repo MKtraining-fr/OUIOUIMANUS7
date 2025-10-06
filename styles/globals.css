@@ -2582,11 +2582,11 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2rem;
-  min-height: 2rem;
-  padding: 0 0.25rem;
+  min-width: 4rem;
+  min-height: 4rem;
+  padding: 0 0.5rem;
   border-radius: 999px;
-  font-size: 0.875rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: white;
   background: #dc2626;
