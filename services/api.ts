@@ -951,11 +951,11 @@ const updateTableStatusBasedOnOrders = async (tableId: string): Promise<void> =>
 
   let newTableStatus: Table["  if (allItemsServed) {
     newTableStatus = "para_pagar";
-  } else if (anyItemListo) {
-    // If any item is ready, the table is ready for delivery
+  } else if (anyItemListo && !anyItemEnviado) {
+    // If there are ready items and no items still in kitchen, it's ready for delivery
     newTableStatus = "para_entregar";
-  } else if (anyItemEnviado) {
-    // If any item is still in the kitchen (enviado), the table is in cuisine
+  } else if (anyItemEnviado || (anyItemListo && anyItemEnviado)) {
+    // If any item is still in the kitchen (enviado), or some are ready but others are still in kitchen
     newTableStatus = "en_cuisine";
   } else if (anyItemServido) {
     // If some items are served but not all, and nothing else is in kitchen/ready/enviado
