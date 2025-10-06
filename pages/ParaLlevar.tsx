@@ -22,7 +22,7 @@ const TakeawayCard: React.FC<{ order: Order, onValidate?: (orderId: string) => v
 
     return (
         <>
-            <div className={`relative flex h-full flex-col overflow-hidden rounded-xl border bg-white text-gray-900 shadow-md transition-shadow duration-300 hover:shadow-lg ${urgencyStyles.border}`}>
+            <div className={`relative flex h-full flex-col overflow-hidden rounded-xl border text-gray-900 shadow-md transition-shadow duration-300 hover:shadow-lg ${urgencyStyles.border} ${urgencyStyles.background}`}>
                 <span aria-hidden className={`absolute inset-y-0 left-0 w-1 ${urgencyStyles.accent}`} />
                 <header className="border-b border-gray-200 px-5 pt-5 pb-4">
                     <div className="flex flex-col gap-3">

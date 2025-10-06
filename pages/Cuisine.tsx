@@ -57,7 +57,7 @@ const KitchenTicketCard: React.FC<{ order: KitchenTicketOrder; onReady: (orderId
     const sentAtFormatted = sentAt.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
 
     return (
-        <div className={`flex h-full flex-col overflow-hidden rounded-xl bg-white text-gray-900 shadow-lg transition-shadow duration-300 hover:shadow-xl ${urgencyStyles.border}`}>
+        <div className={`flex h-full flex-col overflow-hidden rounded-xl text-gray-900 shadow-lg transition-shadow duration-300 hover:shadow-xl ${urgencyStyles.border} ${urgencyStyles.background}`}>
             <header className="border-b border-gray-200 px-5 pt-5 pb-4">
                 <div className="flex w-full flex-col gap-4">
                     <h3 className="w-full text-center text-3xl font-semibold text-gray-900 sm:text-left sm:text-4xl">
