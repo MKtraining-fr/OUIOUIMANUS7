@@ -116,6 +116,7 @@ const Commande: React.FC = () => {
     const syncQueueRef = useRef<Promise<void>>(Promise.resolve());
     const currentItemsSnapshotCacheRef = useRef<OrderItemsSnapshotCache | null>(null);
     const originalItemsSnapshotCacheRef = useRef<OrderItemsSnapshotCache | null>(null);
+    const hasLocalChangesRef = useRef<boolean>(false);
 
     const updateSnapshotCache = useCallback((
         cacheRef: MutableRefObject<OrderItemsSnapshotCache | null>,
@@ -207,6 +208,12 @@ const Commande: React.FC = () => {
 
     const fetchOrderData = useCallback(async (isRefresh = false) => {
         if (!tableId) return;
+        
+        // Ne pas rafraîchir si des changements locaux sont en cours de synchronisation
+        if (isRefresh && hasLocalChangesRef.current) {
+            return;
+        }
+        
         try {
             if (!isRefresh) setLoading(true);
 
@@ -415,13 +422,15 @@ const Commande: React.FC = () => {
     }, [applyPendingServerSnapshot, fetchOrderData, updateSnapshotCache]);
 
     const scheduleItemsSync = useCallback((delay = 300) => {
+        hasLocalChangesRef.current = true;
+        
         if (itemsSyncTimeoutRef.current !== null) {
             window.clearTimeout(itemsSyncTimeoutRef.current);
         }
 
         const effectiveDelay = delay > 0 ? delay : 1;
 
-        itemsSyncTimeoutRef.current = window.setTimeout(() => {
+        itemsSyncTimeoutRef.current = window.setTimeout(async () => {
             itemsSyncTimeoutRef.current = null;
             if (!orderRef.current) return;
 
@@ -430,7 +439,8 @@ const Commande: React.FC = () => {
                 ? serverOrderRef.current.items.map(item => ({ ...item }))
                 : snapshotItems.map(item => ({ ...item }));
 
-            void updateOrderItems(snapshotItems, { removalSourceItems });
+            await updateOrderItems(snapshotItems, { removalSourceItems });
+            hasLocalChangesRef.current = false;
         }, effectiveDelay);
     }, [updateOrderItems]);
 

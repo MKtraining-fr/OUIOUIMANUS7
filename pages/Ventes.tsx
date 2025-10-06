@@ -362,15 +362,32 @@ const Ventes: React.FC = () => {
     async (orderId: string) => {
       setActionError(null);
       setActionSuccess(null);
+      
+      // Trouver la table concernée
+      const affectedTable = tables.find(t => t.commandeId === orderId);
+      if (!affectedTable) return;
+      
+      // Mise à jour optimiste : mettre à jour uniquement la table concernée
+      setTables(prevTables => 
+        prevTables.map(table => 
+          table.id === affectedTable.id
+            ? { ...table, statut: 'para_pagar', estado_cocina: 'servido' }
+            : table
+        )
+      );
+      
       try {
         await api.markOrderAsServed(orderId);
+        // Rafraîchir pour synchroniser avec le serveur
         await fetchTables();
       } catch (error) {
         console.error('Failed to mark order as served:', error);
         setActionError('Impossible de marquer la commande comme servie. Veuillez réessayer.');
+        // Rollback en cas d'erreur
+        await fetchTables();
       }
     },
-    [fetchTables],
+    [fetchTables, tables],
   );
 
   if (loading) {
