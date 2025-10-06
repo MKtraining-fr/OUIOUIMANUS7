@@ -944,27 +944,34 @@ const updateTableStatusBasedOnOrders = async (tableId: string): Promise<void> =>
 
   const allItems = itemsData || [];
 
-  const a  const anyItemEnviado = allItems.some(item => item.estado === "enviado");
+  const anyItemEnviado = allItems.some(item => item.estado === "enviado");
   const anyItemListo = allItems.some(item => item.estado === "listo");
   const anyItemServido = allItems.some(item => item.estado === "servido");
   const anyItemEnAttente = allItems.some(item => item.estado === "en_attente");
   const allItemsServido = allItems.every(item => item.estado === "servido");
 
-  let newTab   if (anyItemListo) {
+  let newTableStatus: string;
+  if (anyItemListo) {
     // If any item is ready, the table is ready for delivery
     newTableStatus = "para_entregar";
   } else if (anyItemEnviado || anyItemEnAttente) {
     // If any item is still in the kitchen (enviado) or pending (en_attente), the table is in cuisine
     newTableStatus = "en_cuisine";
-  } else if (allItemsServed) {
+  } else if (allItemsServido) {
     // All items are served, so the table is ready for payment
     newTableStatus = "para_pagar";
   } else {
     // Fallback: if no items are in any relevant state, assume en_cuisine (or libre if no orders at all)
     newTableStatus = "en_cuisine";
-  }}};
+  }
 
-const createSalesEntriesForOrder = async (order: Order): Promise<number> => {void> => {
+  await supabase
+    .from("restaurant_tables")
+    .update({ statut: newTableStatus })
+    .eq("id", tableId);
+};
+
+const createSalesEntriesForOrder = async (order: Order): Promise<void> => {
   const { data: ordersData } = await supabase
     .from("orders")
     .select("id, estado_cocina, statut")
@@ -1856,6 +1863,14 @@ export const api = {
       if (order.table_id) {
         await updateTableStatusBasedOnOrders(order.table_id);
       }
+
+      publishOrderChange();
+      const updatedOrder = await fetchOrderById(orderId);
+      if (!updatedOrder) {
+        throw new Error('Order not found after ready update');
+      }
+      return updatedOrder;
+    }
 
     publishOrderChange();
     const updatedOrder = await fetchOrderById(orderId);
