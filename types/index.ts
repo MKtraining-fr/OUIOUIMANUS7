@@ -279,6 +279,8 @@ export interface Category {
   nom: string;
 }
 
+export type TableStatus = 'libre' | 'en_cuisine' | 'para_entregar' | 'para_pagar';
+
 export interface Table {
   id: string;
   nom: string;

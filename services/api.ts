@@ -7,6 +7,7 @@ import {
   Table,
   Order,
   KitchenTicket,
+  TableStatus,
   Product,
   Category,
   Ingredient,
@@ -909,7 +910,114 @@ const resolveDashboardPeriodBounds = (period: DashboardPeriod) => {
   return { config, start, end };
 };
 
-const createSalesEntriesForOrder = async (order: Order): Promise<number> => {
+const updateTableStatusBasedOnOrders = async (tableId: string): Promise<void> => {
+  const { data: ordersData } = await supabase
+    .from("orders")
+    .select("id, estado_cocina, statut")
+    .eq("table_id", tableId)
+    .in("statut", ["en_cours"]); // Only consider active orders
+
+  if (!ordersData || ordersData.length === 0) {
+    // If no active orders, the table should be ready for payment or free
+    // This case should ideally be handled by finalizeOrder setting to libre
+    // For now, if no active orders, assume it\'s ready for payment if it wasn\'t already libre
+    const { data: currentTable } = await supabase
+      .from("restaurant_tables")
+      .select("statut")
+      .eq("id", tableId)
+      .single();
+    if (currentTable?.statut !== "libre") {
+      await supabase
+        .from("restaurant_tables")
+        .update({ statut: "para_pagar" })
+        .eq("id", tableId);
+    }
+    return;
+  }
+
+  // Fetch all items for these orders
+  const allOrderIds = ordersData.map(o => o.id);
+  const { data: itemsData } = await supabase
+    .from("order_items")
+    .select("estado")
+    .in("order_id", allOrderIds);
+
+  const allItems = itemsData || [];
+
+  const anyItemEnviado = allItems.some(item => item.estado === "enviado");
+  const anyItemListo = allItems.some(item => item.estado === "listo");
+  const allItemsServido = allItems.every(item => item.estado === "servido");
+
+  let newTableStatus: Table["statut"];
+
+  if (allItemsServido) {
+    newTableStatus = "para_pagar";
+  } else if (anyItemListo) {
+    newTableStatus = "para_entregar";
+  } else if (anyItemEnviado) {
+    newTableStatus = "en_cuisine";
+  } else {
+    // Fallback: if no items are in kitchen, ready or served, it means they are not sent yet or something is wrong
+    // If there are orders but no items in any relevant state, assume en_cuisine
+    newTableStatus = "en_cuisine";
+  }
+
+  await supabase
+    .from("restaurant_tables")
+    .update({ statut: newTableStatus })
+    .eq("id", tableId);
+};
+
+const createSalesEntriesForOrder = async (order: Order): Promise<number> => {void> => {
+  const { data: ordersData } = await supabase
+    .from("orders")
+    .select("id, estado_cocina, statut")
+    .eq("table_id", tableId)
+    .in("statut", ["en_cours"]); // Only consider active orders
+
+  if (!ordersData || ordersData.length === 0) {
+    // No active orders, table should be libre (or para_pagar if there were previous orders)
+    // For now, let's assume it should go to para_pagar if no active orders are found after serving
+    await supabase
+      .from("restaurant_tables")
+      .update({ statut: "para_pagar" })
+      .eq("id", tableId);
+    return;
+  }
+
+  // Fetch all items for these orders
+  const allOrderIds = ordersData.map(o => o.id);
+  const { data: itemsData } = await supabase
+    .from("order_items")
+    .select("estado")
+    .in("order_id", allOrderIds);
+
+  const allItems = itemsData || [];
+
+  const allItemsServed = allItems.every(item => item.estado === "servido");
+  const allItemsReady = allItems.every(item => item.estado === "listo" || item.estado === "servido");
+  const anyItemInKitchen = allItems.some(item => item.estado === "enviado");
+
+  let newTableStatus: Table["statut"];
+
+  if (allItemsServed) {
+    newTableStatus = "para_pagar";
+  } else if (allItemsReady) {
+    newTableStatus = "para_entregar";
+  } else if (anyItemInKitchen) {
+    newTableStatus = "en_cuisine";
+  } else {
+    // Fallback, if no items are in kitchen, ready or served, it means they are not sent yet or something is wrong
+    newTableStatus = "en_cuisine"; // Or 'libre' if no items at all
+  }
+
+  await supabase
+    .from("restaurant_tables")
+    .update({ statut: newTableStatus })
+    .eq("id", tableId);
+};
+
+  createSalesEntriesForOrder: async (order: Order): Promise<number> => {
   if (!order.items.length) {
     await supabase.from('sales').delete().eq('order_id', order.id);
     await supabase.from('orders').update({ profit: 0 }).eq('id', order.id);
@@ -1742,42 +1850,16 @@ export const api = {
         return itemTimestamp === ticketTimestamp || item.estado === 'listo' || item.estado === 'servido';
       });
 
-      // Only update order estado_cocina if all items are ready
       if (allItemsReady) {
         await supabase
-          .from('orders')
-          .update({ estado_cocina: 'listo', date_listo_cuisine: nowIso })
-          .eq('id', orderId);
+          .from("orders")
+          .update({ estado_cocina: "listo", date_listo_cuisine: nowIso })
+          .eq("id", orderId);
       }
-    } else {
-      // Legacy behavior: mark entire order as ready
-      await supabase
-        .from('orders')
-        .update({ estado_cocina: 'listo', date_listo_cuisine: nowIso })
-        .eq('id', orderId);
-    }
 
-    // Check table status
-    if (order.table_id) {
-      // Check if all orders for this table are ready
-      const { data: tableOrders } = await supabase
-        .from('orders')
-        .select('id, estado_cocina')
-        .eq('table_id', order.table_id)
-        .in('statut', ['en_cours']);
-
-      // Only update table status if all orders are ready (listo or servido)
-      const allOrdersReady = tableOrders?.every(
-        (o) => o.estado_cocina === 'listo' || o.estado_cocina === 'servido'
-      );
-
-      if (allOrdersReady) {
-        await supabase
-          .from('restaurant_tables')
-          .update({ statut: 'para_entregar' })
-          .eq('id', order.table_id);
+      if (order.table_id) {
+        await updateTableStatusBasedOnOrders(order.table_id);
       }
-    }
 
     publishOrderChange();
     const updatedOrder = await fetchOrderById(orderId);
@@ -1790,26 +1872,30 @@ export const api = {
   markOrderAsServed: async (orderId: string): Promise<Order> => {
     const existingOrder = await fetchOrderById(orderId);
     if (!existingOrder) {
-      throw new Error('Order not found');
+      throw new Error("Order not found");
     }
 
     const nowIso = new Date().toISOString();
     await supabase
-      .from('orders')
-      .update({ estado_cocina: 'servido', date_servido: nowIso })
-      .eq('id', orderId);
+      .from("orders")
+      .update({ estado_cocina: "servido", date_servido: nowIso })
+      .eq("id", orderId);
+
+    // Update individual order items to 'servido'
+    await supabase
+      .from("order_items")
+      .update({ estado: "servido" })
+      .eq("order_id", orderId)
+      .eq("estado", "listo"); // Only mark items that were 'listo'
 
     if (existingOrder.table_id) {
-      await supabase
-        .from('restaurant_tables')
-        .update({ statut: 'para_pagar' })
-        .eq('id', existingOrder.table_id);
+      await updateTableStatusBasedOnOrders(existingOrder.table_id);
     }
 
     publishOrderChange();
     const updatedOrder = await fetchOrderById(orderId);
     if (!updatedOrder) {
-      throw new Error('Order not found after serve update');
+      throw new Error("Order not found after serve update");
     }
     return updatedOrder;
   },
@@ -1833,10 +1919,7 @@ export const api = {
       .eq('id', orderId);
 
     if (order.table_id) {
-      await supabase
-        .from('restaurant_tables')
-        .update({ statut: 'libre', commande_id: null, couverts: null })
-        .eq('id', order.table_id);
+      await updateTableStatusBasedOnOrders(order.table_id);
     }
 
     publishOrderChange();
