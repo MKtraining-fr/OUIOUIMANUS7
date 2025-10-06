@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tag, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { AppliedPromoCode } from '../../types';
+import { PROMOTION_IMAGES } from '../../constants/promotionImages';
 
 interface PromoCodeInputProps {
   appliedCodes: AppliedPromoCode[];
@@ -38,6 +39,15 @@ const PromoCodeInput: React.FC<PromoCodeInputProps> = ({
 
   return (
     <div className="space-y-2">
+      <div className="flex items-center mb-2">
+        <img 
+          src={PROMOTION_IMAGES.PROMO_CODE} 
+          alt="Code promo" 
+          className="w-6 h-6 mr-2"
+        />
+        <h3 className="font-medium text-gray-700">Code promo</h3>
+      </div>
+      
       <form onSubmit={handleSubmit} className="flex items-center gap-2">
         <div className="relative flex-grow">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

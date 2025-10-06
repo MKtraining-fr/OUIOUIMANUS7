@@ -1,138 +1,169 @@
-import { 
-  Promotion, 
-  PromotionType, 
-  PromotionCondition, 
-  PromotionConfig,
-  AppliedPromotion,
-  AppliedPromoCode,
-  OrderPromotions,
-  Order,
-  OrderItem,
-  Product,
-  Category
-} from '../types';
-import { api } from './api';
+import { Promotion, PromoCode, OrderItem } from '../types';
+import { getPromotionImage } from '../constants/promotionImages';
 
-/**
- * Valide un code promotionnel et retourne les détails de la promotion si valide
- * @param code Le code promotionnel à valider
- * @returns Les détails de la promotion si le code est valide, null sinon
- */
-export const validatePromoCode = async (code: string): Promise<AppliedPromoCode | null> => {
-  try {
-    // Dans une implémentation réelle, cette fonction ferait un appel API
-    // pour valider le code promo côté serveur
-    
-    // Simulation d'une validation de code promo
-    if (code.toLowerCase() === 'welcome10') {
-      return {
-        code: 'WELCOME10',
-        discount: 10, // 10% de réduction
-        type: 'percentage',
-        name: 'Bienvenue',
-        description: '10% de réduction sur votre première commande'
-      };
+// Fonction pour valider un code promo
+export const validatePromoCode = (code: string): PromoCode | null => {
+  // Codes promo de test
+  const testCodes: { [key: string]: PromoCode } = {
+    'WELCOME10': {
+      id: 'welcome10',
+      code: 'WELCOME10',
+      type: 'percentage',
+      value: 10,
+      description: '10% de réduction sur votre commande',
+      minOrderValue: 0,
+      maxUses: 1,
+      currentUses: 0,
+      validFrom: new Date('2023-01-01'),
+      validTo: new Date('2025-12-31'),
+      image: getPromotionImage('percentage')
+    },
+    'SUMMER2023': {
+      id: 'summer2023',
+      code: 'SUMMER2023',
+      type: 'fixed',
+      value: 5000,
+      description: '5000 COP de réduction sur votre commande',
+      minOrderValue: 20000,
+      maxUses: 100,
+      currentUses: 45,
+      validFrom: new Date('2023-06-01'),
+      validTo: new Date('2023-08-31'),
+      image: getPromotionImage('fixed')
+    },
+    'FREEBEVERAGE': {
+      id: 'freebeverage',
+      code: 'FREEBEVERAGE',
+      type: 'free_item',
+      value: 0,
+      description: 'Une boisson gratuite avec votre commande',
+      minOrderValue: 30000,
+      maxUses: 50,
+      currentUses: 12,
+      validFrom: new Date('2023-01-01'),
+      validTo: new Date('2025-12-31'),
+      image: getPromotionImage('free_item'),
+      freeItemCategory: 'beverages'
+    },
+    'BURGER2X1': {
+      id: 'burger2x1',
+      code: 'BURGER2X1',
+      type: '2x1',
+      value: 0,
+      description: 'Achetez un burger, obtenez-en un gratuit',
+      minOrderValue: 0,
+      maxUses: 200,
+      currentUses: 87,
+      validFrom: new Date('2023-01-01'),
+      validTo: new Date('2025-12-31'),
+      image: getPromotionImage('2x1'),
+      applicableCategories: ['burgers']
     }
-    
-    if (code.toLowerCase() === 'summer2023') {
-      return {
-        code: 'SUMMER2023',
-        discount: 5000, // 5000 COP de réduction
-        type: 'fixed',
-        name: 'Été 2023',
-        description: '5000 COP de réduction sur votre commande'
-      };
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('Erreur lors de la validation du code promo:', error);
+  };
+
+  // Vérifier si le code existe
+  const upperCode = code.toUpperCase();
+  if (!testCodes[upperCode]) {
     return null;
   }
+
+  const promoCode = testCodes[upperCode];
+
+  // Vérifier si le code est valide (date)
+  const now = new Date();
+  if (now < promoCode.validFrom || now > promoCode.validTo) {
+    return null;
+  }
+
+  // Vérifier si le code a atteint son nombre maximum d'utilisations
+  if (promoCode.maxUses > 0 && promoCode.currentUses >= promoCode.maxUses) {
+    return null;
+  }
+
+  return promoCode;
 };
 
-/**
- * Calcule les promotions applicables à une commande
- * @param order La commande à analyser
- * @param appliedPromoCodes Les codes promo appliqués à la commande
- * @returns Les promotions appliquées et le montant total des remises
- */
-export const calculateOrderPromotions = async (
-  order: Order,
-  appliedPromoCodes: AppliedPromoCode[]
-): Promise<OrderPromotions> => {
-  const appliedPromotions: AppliedPromotion[] = [];
+// Fonction pour calculer les promotions applicables à une commande
+export const calculateOrderPromotions = (
+  items: OrderItem[],
+  promoCodes: PromoCode[] = []
+): { 
+  appliedPromotions: Promotion[],
+  totalDiscount: number
+} => {
+  const appliedPromotions: Promotion[] = [];
   let totalDiscount = 0;
-  
-  try {
-    // 1. Appliquer les promotions automatiques (2x1, etc.)
-    // Dans une implémentation réelle, cette fonction récupérerait les promotions actives depuis l'API
-    
-    // Exemple: Promotion 2x1 sur les burgers
-    const burgerItems = order.items.filter(item => 
-      item.nom.toLowerCase().includes('burger') || 
-      item.categorie?.toLowerCase().includes('burger')
-    );
-    
-    if (burgerItems.length >= 2) {
-      // Trouver l'article le moins cher pour l'offrir
-      const sortedBurgers = [...burgerItems].sort((a, b) => a.prix_unitaire - b.prix_unitaire);
-      const cheapestBurger = sortedBurgers[0];
-      
-      if (cheapestBurger) {
-        const discount = cheapestBurger.prix_unitaire;
+
+  // Promotions automatiques (exemple : 2x1 sur les burgers)
+  const burgerItems = items.filter(item => 
+    item.product.category === 'burgers' && 
+    item.quantity >= 2
+  );
+
+  if (burgerItems.length > 0) {
+    // Pour chaque burger, appliquer une promotion 2x1
+    burgerItems.forEach(item => {
+      const freeQuantity = Math.floor(item.quantity / 2);
+      if (freeQuantity > 0) {
+        const discountPerItem = item.product.price;
+        const discount = discountPerItem * freeQuantity;
+        
         appliedPromotions.push({
-          id: 'auto-2x1-burger',
+          id: `2x1-${item.product.id}`,
+          type: '2x1',
           name: '2x1 sur les burgers',
-          description: 'Le burger le moins cher est offert',
-          discount,
-          type: 'automatic'
+          description: `Achetez un ${item.product.name}, obtenez-en un gratuit`,
+          value: discount,
+          image: getPromotionImage('2x1'),
+          appliedTo: [item.id]
         });
         
         totalDiscount += discount;
       }
+    });
+  }
+
+  // Appliquer les codes promo
+  promoCodes.forEach(promoCode => {
+    let discount = 0;
+    
+    switch (promoCode.type) {
+      case 'percentage':
+        // Calculer le sous-total de la commande
+        const subtotal = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        discount = subtotal * (promoCode.value / 100);
+        break;
+        
+      case 'fixed':
+        discount = promoCode.value;
+        break;
+        
+      case 'free_item':
+        // Logique pour article gratuit (à implémenter)
+        break;
+        
+      case '2x1':
+        // Déjà géré par les promotions automatiques
+        break;
     }
     
-    // 2. Appliquer les codes promo
-    for (const promoCode of appliedPromoCodes) {
-      let codeDiscount = 0;
-      
-      if (promoCode.type === 'percentage') {
-        // Calculer la remise en pourcentage sur le total
-        const subtotal = order.items.reduce((sum, item) => sum + item.prix_unitaire * item.quantite, 0);
-        codeDiscount = Math.round(subtotal * (promoCode.discount / 100));
-      } else if (promoCode.type === 'fixed') {
-        // Remise d'un montant fixe
-        codeDiscount = promoCode.discount;
-      }
-      
+    if (discount > 0) {
       appliedPromotions.push({
-        id: `code-${promoCode.code}`,
-        name: promoCode.name,
+        id: promoCode.id,
+        type: promoCode.type,
+        name: `Code promo: ${promoCode.code}`,
         description: promoCode.description,
-        discount: codeDiscount,
-        type: 'code',
-        code: promoCode.code
+        value: discount,
+        image: promoCode.image,
+        appliedTo: items.map(item => item.id)
       });
       
-      totalDiscount += codeDiscount;
+      totalDiscount += discount;
     }
-    
-    // 3. Vérifier si le total des remises ne dépasse pas le total de la commande
-    const subtotal = order.items.reduce((sum, item) => sum + item.prix_unitaire * item.quantite, 0);
-    if (totalDiscount > subtotal) {
-      totalDiscount = subtotal;
-    }
-    
-    return {
-      appliedPromotions,
-      totalDiscount
-    };
-  } catch (error) {
-    console.error('Erreur lors du calcul des promotions:', error);
-    return {
-      appliedPromotions: [],
-      totalDiscount: 0
-    };
-  }
+  });
+
+  return {
+    appliedPromotions,
+    totalDiscount
+  };
 };

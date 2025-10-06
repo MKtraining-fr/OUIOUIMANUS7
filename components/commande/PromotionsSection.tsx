@@ -4,6 +4,7 @@ import { OrderPromotions, AppliedPromoCode } from '../../types';
 import PromoCodeInput from './PromoCodeInput';
 import PromotionBadge from './PromotionBadge';
 import { formatCurrencyCOP } from '../../utils/formatIntegerAmount';
+import { PROMOTION_IMAGES } from '../../constants/promotionImages';
 
 interface PromotionsSectionProps {
   promotions: OrderPromotions | undefined;
@@ -26,7 +27,11 @@ const PromotionsSection: React.FC<PromotionsSectionProps> = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-brand-secondary flex items-center gap-2">
-          <Ticket size={20} />
+          <img 
+            src={PROMOTION_IMAGES.PROMO_BANNER} 
+            alt="Promotions" 
+            className="w-6 h-6"
+          />
           <span>Promotions</span>
         </h3>
         {totalDiscount > 0 && (
