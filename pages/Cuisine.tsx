@@ -73,7 +73,12 @@ const KitchenTicketCard: React.FC<{ order: KitchenTicketOrder; onReady: (orderId
                 <ul className="space-y-3">
                     {groupedItems.map((item) => (
                         <li key={item.key} className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 shadow-sm">
-                            <p className="text-lg font-semibold text-gray-900">{item.quantite}x {item.nom_produit}</p>
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-600 text-lg font-bold text-white shadow-md">
+                                    {item.quantite}
+                                </span>
+                                <p className="text-lg font-semibold text-gray-900">{item.nom_produit}</p>
+                            </div>
                             {item.commentaire && (
                                 <p className="mt-2 rounded-md border border-dashed border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium italic text-blue-800">
                                     {item.commentaire}

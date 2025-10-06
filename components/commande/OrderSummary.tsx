@@ -61,11 +61,16 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                             ) : (
                                 categorizedItems.pending.map(({ item, index }) => (
                                     <div key={item.id} className="p-3 rounded-lg bg-yellow-100">
-                                        <div className="flex justify-between items-start">
-                                            <p className="font-bold text-gray-900 flex-1">
-                                                {item.quantite}x {item.nom_produit}
-                                            </p>
-                                            <p className="font-bold text-gray-900">
+                                        <div className="flex justify-between items-center gap-3">
+                                            <div className="flex items-center gap-3 flex-1">
+                                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-600 text-base font-bold text-white shadow-md">
+                                                    {item.quantite}
+                                                </span>
+                                                <p className="font-bold text-gray-900">
+                                                    {item.nom_produit}
+                                                </p>
+                                            </div>
+                                            <p className="font-bold text-gray-900 whitespace-nowrap">
                                                 {formatCurrencyCOP(item.quantite * item.prix_unitaire)}
                                             </p>
                                         </div>
@@ -114,11 +119,16 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                                 </div>
                                 {categorizedItems.sent.map(({ item }) => (
                                     <div key={item.id} className="p-3 rounded-lg bg-green-100">
-                                        <div className="flex justify-between items-start">
-                                            <p className="font-bold text-gray-900 flex-1">
-                                                {item.quantite}x {item.nom_produit}
-                                            </p>
-                                            <p className="font-bold text-gray-900">
+                                        <div className="flex justify-between items-center gap-3">
+                                            <div className="flex items-center gap-3 flex-1">
+                                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-base font-bold text-white shadow-md">
+                                                    {item.quantite}
+                                                </span>
+                                                <p className="font-bold text-gray-900">
+                                                    {item.nom_produit}
+                                                </p>
+                                            </div>
+                                            <p className="font-bold text-gray-900 whitespace-nowrap">
                                                 {formatCurrencyCOP(item.quantite * item.prix_unitaire)}
                                             </p>
                                         </div>

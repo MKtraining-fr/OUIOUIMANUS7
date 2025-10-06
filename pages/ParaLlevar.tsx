@@ -76,9 +76,14 @@ const TakeawayCard: React.FC<{ order: Order, onValidate?: (orderId: string) => v
                                     const note = item.commentaire?.trim();
                                     return (
                                         <li key={item.id} className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 shadow-sm">
-                                            <div className="flex items-baseline justify-between gap-3 text-gray-900">
-                                                <span className="font-semibold text-gray-900">{item.quantite}× {item.nom_produit}</span>
-                                                <span className="text-sm sm:text-base font-semibold text-gray-900">{formatCurrencyCOP(item.prix_unitaire * item.quantite)}</span>
+                                            <div className="flex items-center justify-between gap-3">
+                                                <div className="flex items-center gap-3 flex-1">
+                                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-base font-bold text-white shadow-md">
+                                                        {item.quantite}
+                                                    </span>
+                                                    <span className="font-semibold text-gray-900">{item.nom_produit}</span>
+                                                </div>
+                                                <span className="text-sm sm:text-base font-semibold text-gray-900 whitespace-nowrap">{formatCurrencyCOP(item.prix_unitaire * item.quantite)}</span>
                                             </div>
                                             {note && (
                                                 <p className="mt-2 rounded-md border border-dashed border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium italic text-blue-800">
