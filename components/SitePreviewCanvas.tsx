@@ -4,7 +4,7 @@ import {
   EditableZoneKey,
   Product,
   SiteContent,
-} from '../types/all';
+} from '../types';
 import useCustomFonts from '../hooks/useCustomFonts';
 import {
   createBackgroundStyle,

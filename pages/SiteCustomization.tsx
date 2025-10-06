@@ -12,7 +12,7 @@ import {
   SectionStyle,
   SiteContent,
   STYLE_EDITABLE_ELEMENT_KEYS,
-} from '../types/all';
+} from '../types';
 import { api } from '../services/api';
 import { normalizeCloudinaryImageUrl, uploadCustomizationAsset } from '../services/cloudinary';
 import { sanitizeFontFamilyName } from '../utils/fonts';

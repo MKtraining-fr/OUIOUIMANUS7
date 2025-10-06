@@ -10,5 +10,5 @@ import {
   OrderItem,
   Product,
   Category
-} from '../types/all';
+} from '../types';
 import { api } from './api';
