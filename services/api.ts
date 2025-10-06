@@ -1973,7 +1973,7 @@ export const api = {
     return {
       pendingTakeaway: orders.filter(order => isTakeawayLikeOrder(order) && order.statut === 'pendiente_validacion').length,
       readyTakeaway: orders.filter(order => isTakeawayLikeOrder(order) && order.estado_cocina === 'listo').length,
-      kitchenOrders: orders.filter(isKitchenEligibleOrder).length,
+      kitchenOrders: (await api.getKitchenOrders()).length,
       lowStockIngredients: (await fetchIngredients()).filter(
         ingredient => ingredient.stock_actuel <= ingredient.stock_minimum,
       ).length,
