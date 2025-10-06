@@ -121,6 +121,18 @@ export const EDITABLE_ELEMENT_KEYS = [
 
 export type EditableElementKey = (typeof EDITABLE_ELEMENT_KEYS)[number];
 
+export const STYLE_EDITABLE_ELEMENT_KEYS = EDITABLE_ELEMENT_KEYS.filter(
+  key =>
+    !key.endsWith('.style.background') &&
+    !key.endsWith('.image') &&
+    !key.endsWith('.avatarUrl') &&
+    !key.endsWith('.highlightImageUrl') &&
+    !key.endsWith('.postImageUrl') &&
+    key !== 'hero.backgroundImage' &&
+    key !== 'navigation.brandLogo' &&
+    key !== 'navigation.staffLogo',
+) as EditableElementKey[];
+
 export interface User {
   id: string;
   email: string;
@@ -343,6 +355,8 @@ export interface ElementStyles {
   [key: string]: ElementStyle;
 }
 
+export type CustomizationAssetType = 'image' | 'video';
+
 export interface CustomizationAsset {
   id: string;
   type: CustomizationAssetType;
@@ -351,8 +365,6 @@ export interface CustomizationAsset {
   width?: number;
   height?: number;
 }
-
-export type CustomizationAssetType = 'image' | 'video';
 
 export interface SiteContent {
   [key: string]: ElementRichText | CustomizationAsset | SiteContent;
@@ -375,4 +387,9 @@ export interface InstagramReview {
   badgeLabel: string;
   postImageUrl: string;
   postImageAlt: string;
+}
+
+export interface RichTextValue {
+  html: string;
+  plainText: string;
 }
