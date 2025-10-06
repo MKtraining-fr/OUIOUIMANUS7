@@ -950,26 +950,19 @@ const updateTableStatusBasedOnOrders = async (tableId: string): Promise<void> =>
   const anyItemEnAttente = allItems.some(item => item.estado === "en_attente");
   const allItemsServido = allItems.every(item => item.estado === "servido");
 
-  let newTableStatus: Table["statut"];
-
-  if (allItemsServed) {
-    // All items are served, so the table is ready for payment
-    newTableStatus = "para_pagar";
+  let newTab   if (anyItemListo) {
+    // If any item is ready, the table is ready for delivery
+    newTableStatus = "para_entregar";
   } else if (anyItemEnviado || anyItemEnAttente) {
     // If any item is still in the kitchen (enviado) or pending (en_attente), the table is in cuisine
     newTableStatus = "en_cuisine";
-  } else if (anyItemListo) {
-    // If any item is ready, the table is ready for delivery
-    newTableStatus = "para_entregar";
-  } else if (anyItemServido) {
-    // If some items are served but not all, and nothing else is in kitchen/ready/enviado/en_attente
-    // This means some items are served, but others are not yet in kitchen or ready, so it should be para_pagar
+  } else if (allItemsServed) {
+    // All items are served, so the table is ready for payment
     newTableStatus = "para_pagar";
   } else {
     // Fallback: if no items are in any relevant state, assume en_cuisine (or libre if no orders at all)
     newTableStatus = "en_cuisine";
-  }}("id", tableId);
-};
+  }}};
 
 const createSalesEntriesForOrder = async (order: Order): Promise<number> => {void> => {
   const { data: ordersData } = await supabase
