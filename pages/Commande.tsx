@@ -116,7 +116,6 @@ const Commande: React.FC = () => {
     const syncQueueRef = useRef<Promise<void>>(Promise.resolve());
     const currentItemsSnapshotCacheRef = useRef<OrderItemsSnapshotCache | null>(null);
     const originalItemsSnapshotCacheRef = useRef<OrderItemsSnapshotCache | null>(null);
-    const hasLocalChangesRef = useRef<boolean>(false);
 
     const updateSnapshotCache = useCallback((
         cacheRef: MutableRefObject<OrderItemsSnapshotCache | null>,
@@ -209,11 +208,6 @@ const Commande: React.FC = () => {
     const fetchOrderData = useCallback(async (isRefresh = false) => {
         if (!tableId) return;
         
-        // Ne pas rafraîchir si des changements locaux sont en cours de synchronisation
-        if (isRefresh && hasLocalChangesRef.current) {
-            return;
-        }
-        
         try {
             if (!isRefresh) setLoading(true);
 
@@ -271,9 +265,9 @@ const Commande: React.FC = () => {
     }, [isOrderSynced, navigate, tableId, updateSnapshotCache]);
 
     useEffect(() => {
+        // Charger les données initiales uniquement
+        // Le refresh automatique est désactivé pour éviter les conflits lors des modifications
         fetchOrderData();
-        const interval = setInterval(() => fetchOrderData(true), 5000);
-        return () => clearInterval(interval);
     }, [fetchOrderData]);
 
     useEffect(() => {
@@ -422,8 +416,6 @@ const Commande: React.FC = () => {
     }, [applyPendingServerSnapshot, fetchOrderData, updateSnapshotCache]);
 
     const scheduleItemsSync = useCallback((delay = 300) => {
-        hasLocalChangesRef.current = true;
-        
         if (itemsSyncTimeoutRef.current !== null) {
             window.clearTimeout(itemsSyncTimeoutRef.current);
         }
@@ -440,7 +432,6 @@ const Commande: React.FC = () => {
                 : snapshotItems.map(item => ({ ...item }));
 
             await updateOrderItems(snapshotItems, { removalSourceItems });
-            hasLocalChangesRef.current = false;
         }, effectiveDelay);
     }, [updateOrderItems]);
 
