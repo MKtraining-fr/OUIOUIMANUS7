@@ -5,9 +5,12 @@ import {
   PromotionConfig,
   AppliedPromotion,
   AppliedPromoCode,
-  OrderPromotions
-} from '../types/promotions';
-import { Order, OrderItem, Product, Category } from '../types';
+  OrderPromotions,
+  Order,
+  OrderItem,
+  Product,
+  Category
+} from '../types';
 import { api } from './api';
 
 type SupabasePromotionRow = {
