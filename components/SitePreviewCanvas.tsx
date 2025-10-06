@@ -117,7 +117,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               'navigation.brand',
               <div
                 className="text-xl font-bold"
-                style={createTextStyle(content.navigation?.style?.background)}
+                style={createTextStyle(content.navigation?.style)}
               >
                 {content.navigation?.brand?.value || 'Virtus'}
               </div>,
@@ -129,7 +129,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               <a
                 href="#"
                 className="text-sm font-medium"
-                style={createTextStyle(content.navigation?.style?.background)}
+                style={createTextStyle(content.navigation?.style)}
               >
                 {content.navigation?.links?.home?.value || 'Accueil'}
               </a>,
@@ -139,7 +139,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               <a
                 href="#about"
                 className="text-sm font-medium"
-                style={createTextStyle(content.navigation?.style?.background)}
+                style={createTextStyle(content.navigation?.style)}
               >
                 {content.navigation?.links?.about?.value || 'À propos'}
               </a>,
@@ -149,7 +149,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               <a
                 href="#menu"
                 className="text-sm font-medium"
-                style={createTextStyle(content.navigation?.style?.background)}
+                style={createTextStyle(content.navigation?.style)}
               >
                 {content.navigation?.links?.menu?.value || 'Menu'}
               </a>,
@@ -159,7 +159,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               <a
                 href="#contact"
                 className="text-sm font-medium"
-                style={createTextStyle(content.navigation?.style?.background)}
+                style={createTextStyle(content.navigation?.style)}
               >
                 {content.navigation?.links?.contact?.value || 'Contact'}
               </a>,
@@ -182,7 +182,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       {/* Hero */}
       <section
         className="relative overflow-hidden bg-cover bg-center py-32 text-white"
-        style={createHeroBackgroundStyle(content.hero?.backgroundImage?.url)}
+        style={createHeroBackgroundStyle(content.hero?.style || {}, content.hero?.backgroundImage?.url)}
       >
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -217,7 +217,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       <section
         id="about"
         className="py-24"
-        style={createBackgroundStyle(content.about?.style?.background)}
+        style={createBackgroundStyle(content.about?.style?.background || { type: 'color', color: '#ffffff', image: null })}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2">
@@ -226,7 +226,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                 'about.title',
                 <h2
                   className="mb-6 text-3xl font-bold tracking-tight"
-                  style={createTextStyle(content.about?.style?.background)}
+                  style={createTextStyle(content.about?.style)}
                 >
                   {content.about?.title?.value || 'Notre histoire'}
                 </h2>,
@@ -235,7 +235,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                 'about.description',
                 <div
                   className="prose"
-                  style={createBodyTextStyle(content.about?.style?.background)}
+                  style={createBodyTextStyle(content.about?.style)}
                   dangerouslySetInnerHTML={{
                     __html: content.about?.description?.value || 'Description de notre histoire',
                   }}
@@ -261,7 +261,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       <section
         id="menu"
         className="py-24"
-        style={createBackgroundStyle(content.menu?.style?.background)}
+        style={createBackgroundStyle(content.menu?.style?.background || { type: 'color', color: '#ffffff', image: null })}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -269,7 +269,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               'menu.title',
               <h2
                 className="mb-12 text-3xl font-bold tracking-tight"
-                style={createTextStyle(content.menu?.style?.background)}
+                style={createTextStyle(content.menu?.style)}
               >
                 {content.menu?.title?.value || 'Notre menu'}
               </h2>,
@@ -311,7 +311,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                 'menu.loadingLabel',
                 <p
                   className="text-center text-slate-500"
-                  style={createBodyTextStyle(content.menu?.style?.background)}
+                  style={createBodyTextStyle(content.menu?.style)}
                 >
                   {content.menu?.loadingLabel?.value || 'Chargement du menu...'}
                 </p>,
@@ -336,7 +336,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       {/* Instagram Reviews */}
       <section
         className="py-24"
-        style={createBackgroundStyle(content.instagramReviews?.style?.background)}
+        style={createBackgroundStyle(content.instagramReviews?.style?.background || { type: 'color', color: '#ffffff', image: null })}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -344,7 +344,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               'instagramReviews.title',
               <h2
                 className="mb-4 text-3xl font-bold tracking-tight"
-                style={createTextStyle(content.instagramReviews?.style?.background)}
+                style={createTextStyle(content.instagramReviews?.style)}
               >
                 {content.instagramReviews?.title?.value || 'Ce que disent nos clients'}
               </h2>,
@@ -353,7 +353,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               'instagramReviews.subtitle',
               <p
                 className="mb-12 text-lg"
-                style={createBodyTextStyle(content.instagramReviews?.style?.background)}
+                style={createBodyTextStyle(content.instagramReviews?.style)}
                 dangerouslySetInnerHTML={{
                   __html:
                     content.instagramReviews?.subtitle?.value ||
@@ -701,7 +701,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       <section
         id="contact"
         className="py-24"
-        style={createBackgroundStyle(content.findUs?.style?.background)}
+        style={createBackgroundStyle(content.findUs?.style?.background || { type: 'color', color: '#ffffff', image: null })}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -709,7 +709,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               'findUs.title',
               <h2
                 className="mb-12 text-3xl font-bold tracking-tight"
-                style={createTextStyle(content.findUs?.style?.background)}
+                style={createTextStyle(content.findUs?.style)}
               >
                 {content.findUs?.title?.value || 'Nous trouver'}
               </h2>,
@@ -724,7 +724,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     'findUs.addressLabel',
                     <h3
                       className="mb-2 text-lg font-medium"
-                      style={createTextStyle(content.findUs?.style?.background)}
+                      style={createTextStyle(content.findUs?.style)}
                     >
                       {content.findUs?.addressLabel?.value || 'Adresse'}
                     </h3>,
@@ -733,7 +733,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     'findUs.address',
                     <p
                       className="text-slate-600"
-                      style={createBodyTextStyle(content.findUs?.style?.background)}
+                      style={createBodyTextStyle(content.findUs?.style)}
                     >
                       {content.findUs?.address?.value || 'Adresse du restaurant'}
                     </p>,
@@ -744,7 +744,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     'findUs.cityLabel',
                     <h3
                       className="mb-2 text-lg font-medium"
-                      style={createTextStyle(content.findUs?.style?.background)}
+                      style={createTextStyle(content.findUs?.style)}
                     >
                       {content.findUs?.cityLabel?.value || 'Ville'}
                     </h3>,
@@ -753,7 +753,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     'findUs.city',
                     <p
                       className="text-slate-600"
-                      style={createBodyTextStyle(content.findUs?.style?.background)}
+                      style={createBodyTextStyle(content.findUs?.style)}
                     >
                       {content.findUs?.city?.value || 'Ville du restaurant'}
                     </p>,
@@ -764,7 +764,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     'findUs.hoursLabel',
                     <h3
                       className="mb-2 text-lg font-medium"
-                      style={createTextStyle(content.findUs?.style?.background)}
+                      style={createTextStyle(content.findUs?.style)}
                     >
                       {content.findUs?.hoursLabel?.value || 'Horaires'}
                     </h3>,
@@ -773,7 +773,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     'findUs.hours',
                     <p
                       className="text-slate-600"
-                      style={createBodyTextStyle(content.findUs?.style?.background)}
+                      style={createBodyTextStyle(content.findUs?.style)}
                       dangerouslySetInnerHTML={{
                         __html: content.findUs?.hours?.value || 'Horaires du restaurant',
                       }}
@@ -820,7 +820,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       {/* Footer */}
       <footer
         className="py-12 text-white"
-        style={createBackgroundStyle(content.footer?.style?.background)}
+        style={createTextStyle(content.footer?.style)}}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between space-y-6 md:flex-row md:space-y-0">

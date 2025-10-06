@@ -26,28 +26,40 @@ export const formatFontFamily = (fontFamily?: string | null): string | undefined
   return `'${escaped}'`;
 };
 
-export const createBackgroundStyle = (style: SectionStyle): CSSProperties => {
-  if (style.background.type === 'image' && style.background.image) {
-    return {
-      backgroundImage: `url('${style.background.image}')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      backgroundColor: style.background.color,
-    };
+export const createBackgroundStyle = (background: any): CSSProperties => {
+  const style: CSSProperties = {};
+  if (background && typeof background === 'object') {
+    if (background.type === 'color' && background.color) {
+      style.backgroundColor = background.color;
+    } else if (background.type === 'image' && background.image) {
+      style.backgroundImage = `url('${background.image}')`;
+      style.backgroundSize = 'cover';
+      style.backgroundPosition = 'center';
+      style.backgroundRepeat = 'no-repeat';
+    }
+  } else if (typeof background === 'string') {
+    // Fallback for old string format
+    if (background.startsWith('#')) {
+      style.backgroundColor = background;
+    } else {
+      style.backgroundImage = `url('${background}')`;
+      style.backgroundSize = 'cover';
+      style.backgroundPosition = 'center';
+      backgroundRepeat: 'no-repeat';
+    }
   }
-
-  return { backgroundColor: style.background.color };
+  return style;
 };
 
 export const createHeroBackgroundStyle = (
-  style: SectionStyle,
+  style: SectionStyle | undefined | null,
   fallbackImage: string | null,
 ): CSSProperties => {
-  const base = createBackgroundStyle(style);
+  const background = style?.background;
+  const base = createBackgroundStyle(background);
 
-  if (style.background.type === 'image') {
-    const image = style.background.image ?? fallbackImage;
+  if (background?.type === 'image') {
+    const image = background.image ?? fallbackImage;
     if (image) {
       return {
         ...base,
@@ -73,14 +85,14 @@ export const createHeroBackgroundStyle = (
   return base;
 };
 
-export const createTextStyle = (style: SectionStyle): CSSProperties => ({
-  color: style.textColor,
-  fontFamily: formatFontFamily(style.fontFamily),
+export const createTextStyle = (style: SectionStyle | undefined | null): CSSProperties => ({
+  color: style?.textColor,
+  fontFamily: formatFontFamily(style?.fontFamily),
 });
 
-export const createBodyTextStyle = (style: SectionStyle): CSSProperties => ({
+export const createBodyTextStyle = (style: SectionStyle | undefined | null): CSSProperties => ({
   ...createTextStyle(style),
-  fontSize: style.fontSize,
+  fontSize: style?.fontSize,
 });
 
 export const createElementTextStyle = (
