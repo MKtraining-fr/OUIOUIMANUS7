@@ -944,30 +944,31 @@ const updateTableStatusBasedOnOrders = async (tableId: string): Promise<void> =>
 
   const allItems = itemsData || [];
 
-  const anyItemEnviado = allItems.some(item => item.estado === "enviado");
+  const a  const anyItemEnviado = allItems.some(item => item.estado === "enviado");
   const anyItemListo = allItems.some(item => item.estado === "listo");
   const anyItemServido = allItems.some(item => item.estado === "servido");
+  const anyItemEnAttente = allItems.some(item => item.estado === "en_attente");
   const allItemsServido = allItems.every(item => item.estado === "servido");
 
-  let newTableStatus: Table["  if (allItemsServed) {
+  let newTableStatus: Table["statut"];
+
+  if (allItemsServed) {
+    // All items are served, so the table is ready for payment
     newTableStatus = "para_pagar";
-  } else if (anyItemListo && !anyItemEnviado) {
-    // If there are ready items and no items still in kitchen, it's ready for delivery
+  } else if (anyItemEnviado || anyItemEnAttente) {
+    // If any item is still in the kitchen (enviado) or pending (en_attente), the table is in cuisine
+    newTableStatus = "en_cuisine";
+  } else if (anyItemListo) {
+    // If any item is ready, the table is ready for delivery
     newTableStatus = "para_entregar";
-  } else if (anyItemEnviado || (anyItemListo && anyItemEnviado)) {
-    // If any item is still in the kitchen (enviado), or some are ready but others are still in kitchen
-    newTableStatus = "en_cuisine";
   } else if (anyItemServido) {
-    // If some items are served but not all, and nothing else is in kitchen/ready/enviado
-    newTableStatus = "para_pagar"; // This means some items are served, but others are not yet in kitchen or ready
+    // If some items are served but not all, and nothing else is in kitchen/ready/enviado/en_attente
+    // This means some items are served, but others are not yet in kitchen or ready, so it should be para_pagar
+    newTableStatus = "para_pagar";
   } else {
-    // Fallback: if no items are in kitchen, ready or served, it means they are not sent yet or something is wrong
-    // If there are orders but no items in any relevant state, assume en_cuisine
+    // Fallback: if no items are in any relevant state, assume en_cuisine (or libre if no orders at all)
     newTableStatus = "en_cuisine";
-  }ait supabase
-    .from("restaurant_tables")
-    .update({ statut: newTableStatus })
-    .eq("id", tableId);
+  }}("id", tableId);
 };
 
 const createSalesEntriesForOrder = async (order: Order): Promise<number> => {void> => {
