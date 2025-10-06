@@ -1689,19 +1689,71 @@ export const api = {
     return updatedOrder;
   },
 
-  markOrderAsReady: async (orderId: string): Promise<Order> => {
+  markOrderAsReady: async (orderId: string, ticketTimestamp?: number): Promise<Order> => {
     const nowIso = new Date().toISOString();
-    await supabase
-      .from('orders')
-      .update({ estado_cocina: 'listo', date_listo_cuisine: nowIso })
-      .eq('id', orderId);
-
     const order = await fetchOrderById(orderId);
-    if (order?.table_id) {
+    
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    // If ticketTimestamp is provided, only mark items from that specific ticket as ready
+    if (ticketTimestamp !== undefined) {
+      // Get all items for this order
+      const itemsToUpdate = order.items.filter(item => {
+        const itemTimestamp = item.date_envoi ?? order.date_envoi_cuisine ?? order.date_creation;
+        return itemTimestamp === ticketTimestamp;
+      });
+
+      // Update each item's estado to 'listo'
+      for (const item of itemsToUpdate) {
+        await supabase
+          .from('order_items')
+          .update({ estado: 'listo' })
+          .eq('id', item.id);
+      }
+
+      // Check if ALL items in the order are now ready
+      const allItemsReady = order.items.every(item => {
+        const itemTimestamp = item.date_envoi ?? order.date_envoi_cuisine ?? order.date_creation;
+        return itemTimestamp === ticketTimestamp || item.estado === 'listo' || item.estado === 'servido';
+      });
+
+      // Only update order estado_cocina if all items are ready
+      if (allItemsReady) {
+        await supabase
+          .from('orders')
+          .update({ estado_cocina: 'listo', date_listo_cuisine: nowIso })
+          .eq('id', orderId);
+      }
+    } else {
+      // Legacy behavior: mark entire order as ready
       await supabase
-        .from('restaurant_tables')
-        .update({ statut: 'para_entregar' })
-        .eq('id', order.table_id);
+        .from('orders')
+        .update({ estado_cocina: 'listo', date_listo_cuisine: nowIso })
+        .eq('id', orderId);
+    }
+
+    // Check table status
+    if (order.table_id) {
+      // Check if all orders for this table are ready
+      const { data: tableOrders } = await supabase
+        .from('orders')
+        .select('id, estado_cocina')
+        .eq('table_id', order.table_id)
+        .in('statut', ['en_cours']);
+
+      // Only update table status if all orders are ready (listo or servido)
+      const allOrdersReady = tableOrders?.every(
+        (o) => o.estado_cocina === 'listo' || o.estado_cocina === 'servido'
+      );
+
+      if (allOrdersReady) {
+        await supabase
+          .from('restaurant_tables')
+          .update({ statut: 'para_entregar' })
+          .eq('id', order.table_id);
+      }
     }
 
     publishOrderChange();

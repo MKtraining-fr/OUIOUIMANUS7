@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import OrderTimer from '../components/OrderTimer';
 import { getOrderUrgencyStyles } from '../utils/orderUrgency';
 
-const KitchenTicketCard: React.FC<{ order: KitchenTicketOrder; onReady: (orderId: string) => void; canMarkReady: boolean }> = ({ order, onReady, canMarkReady }) => {
+const KitchenTicketCard: React.FC<{ order: KitchenTicketOrder; onReady: (orderId: string, ticketTimestamp?: number) => void; canMarkReady: boolean }> = ({ order, onReady, canMarkReady }) => {
 
     const urgencyStyles = getOrderUrgencyStyles(order.date_envoi_cuisine || Date.now());
     const groupedItems = useMemo(() => {
@@ -95,7 +95,7 @@ const KitchenTicketCard: React.FC<{ order: KitchenTicketOrder; onReady: (orderId
                     </p>
                     {canMarkReady && (
                         <button
-                            onClick={() => onReady(order.id)}
+                            onClick={() => onReady(order.id, order.date_envoi_cuisine)}
                             className="group inline-flex w-full items-center justify-center gap-3 rounded-lg border-2 border-transparent bg-black px-4 py-3 text-lg font-semibold uppercase tracking-[0.2em] text-white shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/70 focus-visible:ring-offset-2 hover:bg-neutral-900"
                         >
                             <ChefHat size={22} className="shrink-0" />
@@ -147,9 +147,9 @@ const Cuisine: React.FC = () => {
         };
     }, [fetchOrders]);
 
-    const handleMarkAsReady = async (orderId: string) => {
+    const handleMarkAsReady = async (orderId: string, ticketTimestamp?: number) => {
         try {
-            await api.markOrderAsReady(orderId);
+            await api.markOrderAsReady(orderId, ticketTimestamp);
             fetchOrders(); // Refresh immediately
         } catch (error) {
             console.error("Failed to mark order as ready", error);
