@@ -379,10 +379,10 @@ const Commande: React.FC = () => {
                     return;
                 }
 
-                const baseItemsForComputation = baseOrder.items.map(item => ({ ...item }));
+                // Utiliser directement l'état local actuel qui contient tous les changements accumulés
+                // au lieu de recalculer en appliquant l'updater sur une base obsolète
+                const finalItems = orderRef.current.items.map(item => ({ ...item }));
                 const removalSourceItems = options?.removalSourceItems ?? currentOrder.items;
-
-                const finalItems = computeItems(baseItemsForComputation);
                 const removedItemIds = removalSourceItems
                     .filter(item => isPersistedItemId(item.id) && !finalItems.some(finalItem => finalItem.id === item.id))
                     .map(item => item.id);
