@@ -1,3 +1,27 @@
+// Import des types de promotion
+import {
+  PromotionType,
+  PromotionConditionType,
+  PromotionCondition,
+  PromotionConfig,
+  Promotion,
+  AppliedPromoCode,
+  AppliedPromotion,
+  OrderPromotions
+} from './promotions';
+
+// Ré-export des types de promotion
+export {
+  PromotionType,
+  PromotionConditionType,
+  PromotionCondition,
+  PromotionConfig,
+  Promotion,
+  AppliedPromoCode,
+  AppliedPromotion,
+  OrderPromotions
+};
+
 export interface Role {
   id: string;
   name: string;
@@ -302,43 +326,6 @@ export interface RoleLogin {
   roleId: string;
   roleName: string;
   loginAt: string;
-}
-
-// Types pour le système de promotions
-export interface PromotionType {
-  id: string;
-  name: string;
-  description?: string;
-  active: boolean;
-  startDate: Date | string;
-  endDate?: Date | string | null;
-  conditions: any[];
-  config: any;
-  priority: number;
-  stackable: boolean;
-  usageLimit?: number | null;
-  usageCount: number;
-}
-
-export interface AppliedPromoCode {
-  code: string;
-  promotionId: string;
-  valid: boolean;
-  message?: string;
-}
-
-export interface AppliedPromotion {
-  promotionId: string;
-  promotionName: string;
-  type: string;
-  discountAmount: number;
-  items?: string[]; // IDs des articles concernés
-}
-
-export interface OrderPromotions {
-  appliedPromotions: AppliedPromotion[];
-  appliedPromoCodes: AppliedPromoCode[];
-  totalDiscount: number;
 }
 
 // Types pour la personnalisation du site

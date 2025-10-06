@@ -1,4 +1,4 @@
-// Types pour le système de gestion des promotions
+// Types pour le système de promotions
 
 /**
  * Types de promotions supportés par le système
@@ -30,56 +30,34 @@ export interface PromotionCondition {
 }
 
 /**
- * Configuration spécifique pour les promotions de type buy_x_get_y
+ * Configuration spécifique au type de promotion
  */
-export interface BuyXGetYConfig {
-  buyQuantity: number;   // Quantité à acheter
-  getQuantity: number;   // Quantité offerte
-  targetProducts?: string[]; // IDs des produits concernés (si différent des produits de la condition)
+export interface PromotionConfig {
+  type: PromotionType;
+  config: {
+    // Configuration pour buy_x_get_y
+    buyQuantity?: number;
+    getQuantity?: number;
+    targetProducts?: string[];
+    
+    // Configuration pour percentage
+    percentage?: number;
+    maxDiscount?: number;
+    
+    // Configuration pour fixed_amount
+    amount?: number;
+    
+    // Configuration pour free_item
+    itemId?: string;
+    quantity?: number;
+    
+    // Configuration pour code_promo
+    code?: string;
+    usageLimit?: number;
+    usageCount?: number;
+    perCustomer?: boolean;
+  };
 }
-
-/**
- * Configuration spécifique pour les promotions de type percentage
- */
-export interface PercentageConfig {
-  percentage: number;    // Pourcentage de réduction
-  maxDiscount?: number;  // Montant maximum de la réduction (optionnel)
-}
-
-/**
- * Configuration spécifique pour les promotions de type fixed_amount
- */
-export interface FixedAmountConfig {
-  amount: number;        // Montant fixe de la réduction
-}
-
-/**
- * Configuration spécifique pour les promotions de type free_item
- */
-export interface FreeItemConfig {
-  itemId: string;        // ID du produit offert
-  quantity: number;      // Quantité offerte
-}
-
-/**
- * Configuration spécifique pour les promotions de type code_promo
- */
-export interface CodePromoConfig {
-  code: string;          // Code à saisir
-  usageLimit?: number;   // Limite d'utilisation (optionnel)
-  usageCount: number;    // Nombre d'utilisations actuel
-  perCustomer?: boolean; // Limite par client (optionnel)
-}
-
-/**
- * Configuration d'une promotion selon son type
- */
-export type PromotionConfig = 
-  | { type: 'buy_x_get_y', config: BuyXGetYConfig }
-  | { type: 'percentage', config: PercentageConfig }
-  | { type: 'fixed_amount', config: FixedAmountConfig }
-  | { type: 'free_item', config: FreeItemConfig }
-  | { type: 'code_promo', config: CodePromoConfig };
 
 /**
  * Modèle principal d'une promotion
@@ -89,39 +67,39 @@ export interface Promotion {
   name: string;
   description?: string;
   active: boolean;
-  startDate: number;     // Timestamp
-  endDate?: number;      // Timestamp (optionnel pour les promotions permanentes)
+  startDate: Date | string;
+  endDate?: Date | string | null;
   conditions: PromotionCondition[];
   config: PromotionConfig;
-  priority: number;      // Priorité d'application (les promotions à priorité plus élevée sont appliquées en premier)
-  stackable: boolean;    // Si la promotion peut être cumulée avec d'autres
-  usageLimit?: number;   // Limite d'utilisation globale (optionnel)
-  usageCount: number;    // Nombre d'utilisations actuel
+  priority: number;
+  stackable: boolean;
+  usageLimit?: number | null;
+  usageCount: number;
 }
 
 /**
- * Résultat de l'application d'une promotion à une commande
- */
-export interface AppliedPromotion {
-  promotionId: string;
-  promotionName: string;
-  discountAmount: number;
-  affectedItems: string[]; // IDs des articles concernés
-  type: PromotionType;
-}
-
-/**
- * État d'un code promo appliqué à une commande
+ * Code promo appliqué à une commande
  */
 export interface AppliedPromoCode {
   code: string;
   promotionId: string;
   valid: boolean;
-  errorMessage?: string;
+  message?: string;
 }
 
 /**
- * Modèle pour stocker les promotions appliquées à une commande
+ * Promotion appliquée à une commande
+ */
+export interface AppliedPromotion {
+  promotionId: string;
+  promotionName: string;
+  type: string;
+  discountAmount: number;
+  items?: string[]; // IDs des articles concernés
+}
+
+/**
+ * Promotions appliquées à une commande
  */
 export interface OrderPromotions {
   appliedPromotions: AppliedPromotion[];
