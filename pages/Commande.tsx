@@ -54,21 +54,20 @@ export const mergeProductIntoPendingItems = (
         ? Math.max(1, Math.floor(result.quantity))
         : 1;
 
-    if (!trimmedComment) {
-        const existingIndex = items.findIndex(
-            item => item.produitRef === product.id
-                && item.estado === 'en_attente'
-                && normalizeComment(item.commentaire) === ''
-                && haveSameExcludedIngredients(item.excluded_ingredients ?? [], defaultExcludedIngredients),
-        );
+    // Chercher un item existant compatible, même avec un ID temporaire
+    const existingIndex = items.findIndex(
+        item => item.produitRef === product.id
+            && item.estado === 'en_attente'
+            && normalizeComment(item.commentaire) === trimmedComment
+            && haveSameExcludedIngredients(item.excluded_ingredients ?? [], defaultExcludedIngredients),
+    );
 
-        if (existingIndex > -1) {
-            return items.map((item, index) => (
-                index === existingIndex
-                    ? { ...item, quantite: item.quantite + sanitizedQuantity }
-                    : item
-            ));
-        }
+    if (existingIndex > -1) {
+        return items.map((item, index) => (
+            index === existingIndex
+                ? { ...item, quantite: item.quantite + sanitizedQuantity }
+                : item
+        ));
     }
 
     const newItem: OrderItem = {
@@ -415,7 +414,7 @@ const Commande: React.FC = () => {
         await syncQueueRef.current;
     }, [applyPendingServerSnapshot, fetchOrderData, updateSnapshotCache]);
 
-    const scheduleItemsSync = useCallback((delay = 100) => {
+    const scheduleItemsSync = useCallback((delay = 300) => {
         if (itemsSyncTimeoutRef.current !== null) {
             window.clearTimeout(itemsSyncTimeoutRef.current);
         }
@@ -463,26 +462,41 @@ const Commande: React.FC = () => {
     }, [applyLocalItemsUpdate, selectedProductForCustomization]);
 
     const handleQuantityChange = useCallback((itemIndex: number, change: number) => {
+        const currentOrder = orderRef.current;
+        if (!currentOrder || !currentOrder.items[itemIndex]) return;
+        
+        const targetItemId = currentOrder.items[itemIndex].id;
+        
         applyLocalItemsUpdate(items => {
-            if (!items[itemIndex]) return items;
-            const updatedItems = items.map(item => ({ ...item }));
-            const newQuantity = updatedItems[itemIndex].quantite + change;
+            const actualIndex = items.findIndex(item => item.id === targetItemId);
+            if (actualIndex === -1) return items;
+            
+            const newQuantity = items[actualIndex].quantite + change;
 
             if (newQuantity <= 0) {
-                updatedItems.splice(itemIndex, 1);
-            } else {
-                updatedItems[itemIndex].quantite = newQuantity;
+                return items.filter(item => item.id !== targetItemId);
             }
-
-            return updatedItems;
+            
+            return items.map(item => 
+                item.id === targetItemId 
+                    ? { ...item, quantite: newQuantity }
+                    : item
+            );
         });
     }, [applyLocalItemsUpdate]);
 
     const handleCommentChange = useCallback((itemIndex: number, newComment: string) => {
+        const currentOrder = orderRef.current;
+        if (!currentOrder || !currentOrder.items[itemIndex]) return;
+        
+        const targetItemId = currentOrder.items[itemIndex].id;
+        
         updateOrderItems(items => {
-            if (!items[itemIndex]) return items;
+            const actualIndex = items.findIndex(item => item.id === targetItemId);
+            if (actualIndex === -1) return items;
+            
             const updatedItems = items.map(item => ({ ...item }));
-            const itemToUpdate = updatedItems[itemIndex];
+            const itemToUpdate = updatedItems[actualIndex];
 
             if (itemToUpdate.quantite > 1 && !itemToUpdate.commentaire && newComment) {
                 itemToUpdate.quantite -= 1;
