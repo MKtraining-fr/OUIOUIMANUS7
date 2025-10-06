@@ -303,6 +303,8 @@ export interface OrderItem {
   commentaire: string;
   estado: 'en_attente' | 'enviado' | 'annule';
   date_envoi?: number; // timestamp
+  promotionApplied?: boolean; // Indique si une promotion est appliquée à cet article
+  originalPrice?: number; // Prix original avant promotion
 }
 
 export interface Order {
@@ -329,6 +331,7 @@ export interface Order {
     adresse?: string;
   };
   receipt_url?: string;
+  promotions?: OrderPromotions; // Promotions appliquées à la commande
 }
 
 export interface KitchenTicket extends Order {
@@ -431,3 +434,6 @@ export interface RoleLogin {
   roleName: string;
   loginAt: string;
 }
+
+// Export des types de promotions
+export * from './promotions';
