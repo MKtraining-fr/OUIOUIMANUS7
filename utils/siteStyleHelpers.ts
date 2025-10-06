@@ -28,7 +28,8 @@ export const formatFontFamily = (fontFamily?: string | null): string | undefined
 
 export const createBackgroundStyle = (background: any): CSSProperties => {
   const style: CSSProperties = {};
-  if (background && typeof background === 'object') {
+  if (!background) return {};
+  if (typeof background === 'object') {
     if (background.type === 'color' && background.color) {
       style.backgroundColor = background.color;
     } else if (background.type === 'image' && background.image) {

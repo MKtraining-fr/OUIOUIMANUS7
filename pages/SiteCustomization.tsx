@@ -105,10 +105,10 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const value = e.target.value;
-    if (key === 'background' && style && 'background' in style) {
+    if (key === 'background' && style) {
       onChange({
         ...style,
-        background: { ...style.background, color: value, type: 'color', image: null },
+        background: { ...(style.background || {}), color: value, type: 'color', image: null },
       } as SectionStyle);
     } else {
       onChange({
@@ -190,7 +190,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
           onUpload={(asset) => {
             onChange({
               ...style,
-              background: { ...style?.background, image: asset.url, type: 'image', color: '' },
+              background: { ...(style?.background || {}), image: asset.url, type: 'image', color: '' },
             } as SectionStyle);
           }}
           assetType="background"
@@ -205,7 +205,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
               onClick={() => {
                 onChange({
                   ...style,
-                  background: { ...style?.background, image: null, type: 'color' },
+                  background: { ...(style?.background || {}), image: null, type: 'color' },
                 } as SectionStyle);
               }}
             >
@@ -484,7 +484,7 @@ const ElementEditor: React.FC<ElementEditorProps> = ({ element, content, onUpdat
           onUpload={(asset) => {
             onChange({
               ...style,
-              background: { ...style?.background, image: asset.url, type: 'image', color: '' },
+              background: { ...(style?.background || {}), image: asset.url, type: 'image', color: '' },
             } as SectionStyle);
           }}
           assetType="background"
@@ -499,7 +499,7 @@ const ElementEditor: React.FC<ElementEditorProps> = ({ element, content, onUpdat
               onClick={() => {
                 onChange({
                   ...style,
-                  background: { ...style?.background, image: null, type: 'color' },
+                  background: { ...(style?.background || {}), image: null, type: 'color' },
                 } as SectionStyle);
               }}
             >
