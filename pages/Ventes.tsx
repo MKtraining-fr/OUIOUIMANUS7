@@ -157,11 +157,10 @@ const TableCard: React.FC<{
       tabIndex={0}
     >
       {table.statut === 'para_entregar' && (
-        <div className="absolute left-3 top-3 z-10">
-          <div className="flex items-center gap-2 rounded-full bg-green-600 px-3 py-1.5 shadow-lg">
-            <HandPlatter size={16} className="text-white" />
-            <span className="text-xs font-bold uppercase tracking-wider text-white">Prêt</span>
-          </div>
+        <div className="absolute -right-2 -top-2 z-10">
+          <span className="table-notification-badge">
+            {table.couverts || '!'}
+          </span>
         </div>
       )}
       {canEdit && (
