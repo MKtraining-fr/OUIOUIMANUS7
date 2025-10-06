@@ -734,26 +734,25 @@ const ensureOrderHasItems = async (order: Order): Promise<Order> => {
     return order;
   }
 
-  const enrichedOrder = await fetchOrderById(order.id);
-  if (enrichedOrder?.items.length) {
-    return enrichedOrder;
-  }
-
+  // Always try to fetch items directly from order_items table as a fallback
+  // This ensures items are retrieved even if the Supabase relation is not configured
   const fallbackItems = await fetchOrderItemsByOrderId(order.id);
+  
   if (fallbackItems.length === 0) {
+    // If still no items found, try enriched order as last resort
+    const enrichedOrder = await fetchOrderById(order.id);
     return enrichedOrder ?? order;
   }
 
-  const baseOrder = enrichedOrder ?? order;
   const computedTotal = fallbackItems.reduce(
     (sum, item) => sum + item.prix_unitaire * item.quantite,
     0,
   );
 
   return {
-    ...baseOrder,
+    ...order,
     items: fallbackItems,
-    total: baseOrder.total > 0 ? baseOrder.total : computedTotal,
+    total: order.total > 0 ? order.total : computedTotal,
   };
 };
 
