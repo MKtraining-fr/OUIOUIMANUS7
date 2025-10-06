@@ -105,10 +105,17 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const value = e.target.value;
-    onChange({
-      ...style,
-      [key]: value,
-    });
+    if (key === 'background' && style && 'background' in style) {
+      onChange({
+        ...style,
+        background: { ...style.background, color: value, type: 'color', image: null },
+      } as SectionStyle);
+    } else {
+      onChange({
+        ...style,
+        [key]: value,
+      });
+    }
   };
 
   const handleFontChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -128,7 +135,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
         <select
           id="background-color"
           className="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
-          value={(style?.background as string) || ''}
+          value={(style?.background?.color as string) || ''}
           onChange={handleColorChange('background')}
         >
           <option value="">Sélectionner une couleur</option>
@@ -174,6 +181,38 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
             </option>
           ))}
         </select>
+      </div>
+      <div>
+        <label htmlFor="background-image" className="mb-1 block text-sm font-medium text-slate-700">
+          Image de fond
+        </label>
+        <ImageUploader
+          onUpload={(asset) => {
+            onChange({
+              ...style,
+              background: { ...style?.background, image: asset.url, type: 'image', color: '' },
+            } as SectionStyle);
+          }}
+          assetType="background"
+          className="mt-2"
+        />
+        {style?.background?.image && (
+          <div className="mt-2 flex items-center space-x-2">
+            <img src={normalizeCloudinaryImageUrl(style.background.image)} alt="Background" className="h-16 w-16 object-cover rounded-md" />
+            <button
+              type="button"
+              className="text-sm text-red-600 hover:text-red-800"
+              onClick={() => {
+                onChange({
+                  ...style,
+                  background: { ...style?.background, image: null, type: 'color' },
+                } as SectionStyle);
+              }}
+            >
+              Supprimer l'image
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -436,6 +475,38 @@ const ElementEditor: React.FC<ElementEditorProps> = ({ element, content, onUpdat
             </button>
           </div>
         </div>
+      </div>
+      <div>
+        <label htmlFor="background-image" className="mb-1 block text-sm font-medium text-slate-700">
+          Image de fond
+        </label>
+        <ImageUploader
+          onUpload={(asset) => {
+            onChange({
+              ...style,
+              background: { ...style?.background, image: asset.url, type: 'image', color: '' },
+            } as SectionStyle);
+          }}
+          assetType="background"
+          className="mt-2"
+        />
+        {style?.background?.image && (
+          <div className="mt-2 flex items-center space-x-2">
+            <img src={normalizeCloudinaryImageUrl(style.background.image)} alt="Background" className="h-16 w-16 object-cover rounded-md" />
+            <button
+              type="button"
+              className="text-sm text-red-600 hover:text-red-800"
+              onClick={() => {
+                onChange({
+                  ...style,
+                  background: { ...style?.background, image: null, type: 'color' },
+                } as SectionStyle);
+              }}
+            >
+              Supprimer l'image
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

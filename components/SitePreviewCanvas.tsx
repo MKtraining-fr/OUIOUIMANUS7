@@ -101,7 +101,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       {/* Navigation */}
       <header
         className="sticky top-0 z-10 border-b border-slate-200"
-        style={createBackgroundStyle(content.navigation?.style?.background)}
+        style={createBackgroundStyle(content.navigation?.style?.background || { type: 'color', color: '#ffffff', image: null })}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-8">
