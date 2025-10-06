@@ -63,7 +63,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <div key={item.id} className="p-3 rounded-lg bg-yellow-100">
                                         <div className="flex justify-between items-center gap-3">
                                             <div className="flex items-center gap-3 flex-1">
-                                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-600 text-base font-bold text-white shadow-md">
+                                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-yellow-500 text-base font-bold text-white shadow-md">
                                                     {item.quantite}
                                                 </span>
                                                 <p className="font-bold text-gray-900">
@@ -121,7 +121,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <div key={item.id} className="p-3 rounded-lg bg-green-100">
                                         <div className="flex justify-between items-center gap-3">
                                             <div className="flex items-center gap-3 flex-1">
-                                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-base font-bold text-white shadow-md">
+                                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-600 text-base font-bold text-white shadow-md">
                                                     {item.quantite}
                                                 </span>
                                                 <p className="font-bold text-gray-900">

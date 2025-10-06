@@ -78,7 +78,7 @@ const TakeawayCard: React.FC<{ order: Order, onValidate?: (orderId: string) => v
                                         <li key={item.id} className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 shadow-sm">
                                             <div className="flex items-center justify-between gap-3">
                                                 <div className="flex items-center gap-3 flex-1">
-                                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-base font-bold text-white shadow-md">
+                                                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base font-bold text-white shadow-md ${urgencyStyles.accent}`}>
                                                         {item.quantite}
                                                     </span>
                                                     <span className="font-semibold text-gray-900">{item.nom_produit}</span>
