@@ -858,7 +858,30 @@ const fetchTablesWithMeta = async (): Promise<Table[]> => {
     );
   }
 
-  return tableRows.map(row => mapTableRow(row, orderMeta));
+  // Count ready orders (estado_cocina = 'listo') for each table
+  const readyOrdersCount = new Map<string, number>();
+  const allTableIds = tableRows.map(row => row.id);
+  
+  if (allTableIds.length > 0) {
+    const readyOrdersResponse = await supabase
+      .from('orders')
+      .select('table_id')
+      .in('table_id', allTableIds)
+      .eq('estado_cocina', 'listo')
+      .in('statut', ['en_cours']);
+    
+    const readyOrders = unwrap<{ table_id: string }[]>(readyOrdersResponse as SupabaseResponse<{ table_id: string }[]>);
+    
+    readyOrders.forEach(order => {
+      const count = readyOrdersCount.get(order.table_id) || 0;
+      readyOrdersCount.set(order.table_id, count + 1);
+    });
+  }
+
+  return tableRows.map(row => ({
+    ...mapTableRow(row, orderMeta),
+    readyOrdersCount: readyOrdersCount.get(row.id) || 0,
+  }));
 };
 
 export const getBusinessDayStart = (now: Date = new Date()): Date => {

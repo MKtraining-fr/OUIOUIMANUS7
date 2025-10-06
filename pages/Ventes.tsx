@@ -156,10 +156,10 @@ const TableCard: React.FC<{
       role="button"
       tabIndex={0}
     >
-      {table.statut === 'para_entregar' && (
+      {table.statut === 'para_entregar' && table.readyOrdersCount && table.readyOrdersCount > 0 && (
         <div className="absolute left-3 top-3 z-10">
           <span className="table-notification-badge">
-            {table.couverts || '!'}
+            {table.readyOrdersCount}
           </span>
         </div>
       )}

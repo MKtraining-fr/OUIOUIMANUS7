@@ -288,6 +288,7 @@ export interface Table {
   couverts?: number;
   estado_cocina?: Order['estado_cocina'];
   date_envoi_cuisine?: number;
+  readyOrdersCount?: number;
 }
 
 export interface OrderItem {
