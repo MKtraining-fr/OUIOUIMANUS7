@@ -1806,7 +1806,8 @@ export const api = {
       const itemsPayload = orderData.items.map(item => {
         const payloadItem: Record<string, unknown> = {
           order_id: orderRow.id,
-          produit_id: item.produitRef,
+          // Convert empty string or invalid UUID to null for special items (e.g., delivery fee)
+          produit_id: item.produitRef && isUuid(item.produitRef) ? item.produitRef : null,
           nom_produit: item.nom_produit,
           prix_unitaire: item.prix_unitaire,
           quantite: item.quantite,

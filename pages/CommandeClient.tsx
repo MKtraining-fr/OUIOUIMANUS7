@@ -116,11 +116,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
 
 const DOMICILIO_FEE = 8000;
 const DOMICILIO_ITEM_NAME = 'DOMICILIO';
-const DOMICILIO_PRODUCT_REF = 'domicilio_fee';
+// Use empty string instead of 'domicilio_fee' since produit_id will be null for special items
+const DOMICILIO_PRODUCT_REF = '';
 
 const createDeliveryFeeItem = (): OrderItem => ({
     id: `domicilio-${Date.now()}`,
-    produitRef: DOMICILIO_PRODUCT_REF,
+    produitRef: DOMICILIO_PRODUCT_REF, // Empty string will be converted to null in API
     nom_produit: DOMICILIO_ITEM_NAME,
     prix_unitaire: DOMICILIO_FEE,
     quantite: 1,
