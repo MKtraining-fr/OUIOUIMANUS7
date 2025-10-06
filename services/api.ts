@@ -946,16 +946,20 @@ const updateTableStatusBasedOnOrders = async (tableId: string): Promise<void> =>
 
   const anyItemEnviado = allItems.some(item => item.estado === "enviado");
   const anyItemListo = allItems.some(item => item.estado === "listo");
+  const anyItemServido = allItems.some(item => item.estado === "servido");
   const allItemsServido = allItems.every(item => item.estado === "servido");
 
-  let newTableStatus: Table["statut"];
-
-  if (allItemsServido) {
+  let newTableStatus: Table["sta  if (allItemsServed) {
     newTableStatus = "para_pagar";
   } else if (anyItemListo) {
+    // If any item is ready, the table is ready for delivery
     newTableStatus = "para_entregar";
   } else if (anyItemEnviado) {
+    // If any item is still in the kitchen (enviado)
     newTableStatus = "en_cuisine";
+  } else if (anyItemServido) {
+    // If some items are served but not all, and nothing else is in kitchen/ready/enviado
+    newTableStatus = "para_pagar"; // This means some items are served, but others are not yet in kitchen or ready
   } else {
     // Fallback: if no items are in kitchen, ready or served, it means they are not sent yet or something is wrong
     // If there are orders but no items in any relevant state, assume en_cuisine
