@@ -820,7 +820,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       {/* Footer */}
       <footer
         className="py-12 text-white"
-        style={createTextStyle(content.footer?.style)}}
+        style={createTextStyle(content.footer?.style)}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between space-y-6 md:flex-row md:space-y-0">
