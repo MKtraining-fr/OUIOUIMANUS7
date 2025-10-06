@@ -20,21 +20,21 @@ const URGENCY_STYLE_MAP: Record<OrderUrgencyLevel, Omit<OrderUrgencyStyles, 'lev
     accent: 'bg-red-500 urgency-accent-critical',
     badge: 'bg-red-100 text-red-700 ring-1 ring-inset ring-red-300 urgency-badge-critical',
     icon: 'text-red-500 urgency-icon-critical',
-    background: 'bg-red-50',
+    background: 'bg-red-100',
   },
   warning: {
     border: 'border-[3px] border-solid border-yellow-400',
     accent: 'bg-yellow-400 urgency-accent-warning',
     badge: 'bg-yellow-100 text-yellow-800 ring-1 ring-inset ring-yellow-300 urgency-badge-warning',
     icon: 'text-yellow-500 urgency-icon-warning',
-    background: 'bg-yellow-50',
+    background: 'bg-yellow-100',
   },
   normal: {
     border: 'border-2 border-solid border-brand-accent',
     accent: 'bg-brand-accent urgency-accent-normal',
     badge: 'bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200 urgency-badge-normal',
     icon: 'text-brand-accent urgency-icon-normal',
-    background: 'bg-blue-50',
+    background: 'bg-blue-100',
   },
 };
 
