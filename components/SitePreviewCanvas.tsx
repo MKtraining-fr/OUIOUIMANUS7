@@ -517,7 +517,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                 <img
                   src={
                     content.instagramReviews?.reviews?.review2?.postImageUrl ||
-                    '''0x300'
+                    ''
                   }
                   alt={
                     content.instagramReviews?.reviews?.review2?.postImageAlt ||
@@ -627,7 +627,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                 <img
                   src={
                     content.instagramReviews?.reviews?.review3?.postImageUrl ||
-                    '''0x300'
+                    ''
                   }
                   alt={
                     content.instagramReviews?.reviews?.review3?.postImageAlt ||
