@@ -109,7 +109,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
     if (key === 'background') {
       onChange({
         ...currentStyle,
-        background: { ...(currentStyle.background || {}), color: value, type: 'color', image: null },
+        background: { ...(currentStyle.background || { type: 'color', color: '', image: null }), color: value, type: 'color', image: null },
       } as SectionStyle);
     } else {
       onChange({
@@ -192,7 +192,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
             const currentStyle = style || {};
             onChange({
               ...currentStyle,
-              background: { ...(currentStyle.background || {}), image: asset.url, type: 'image', color: '' },
+              background: { ...(currentStyle.background || { type: 'color', color: '', image: null }), image: asset.url, type: 'image', color: '' },
             } as SectionStyle);
           }}
           assetType="background"
@@ -208,7 +208,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
                 const currentStyle = style || {};
                 onChange({
                   ...currentStyle,
-                  background: { ...(currentStyle.background || {}), image: null, type: 'color' },
+                  background: { ...(currentStyle.background || { type: 'color', color: '', image: null }), image: null, type: 'color' },
                 } as SectionStyle);
               }}
             >
@@ -488,7 +488,7 @@ const ElementEditor: React.FC<ElementEditorProps> = ({ element, content, onUpdat
             const currentStyle = style || {};
             onChange({
               ...currentStyle,
-              background: { ...(currentStyle.background || {}), image: asset.url, type: 'image', color: '' },
+              background: { ...(currentStyle.background || { type: 'color', color: '', image: null }), image: asset.url, type: 'image', color: '' },
             } as SectionStyle);
           }}
           assetType="background"
@@ -504,7 +504,7 @@ const ElementEditor: React.FC<ElementEditorProps> = ({ element, content, onUpdat
                 const currentStyle = style || {};
                 onChange({
                   ...currentStyle,
-                  background: { ...(currentStyle.background || {}), image: null, type: 'color' },
+                  background: { ...(currentStyle.background || { type: 'color', color: '', image: null }), image: null, type: 'color' },
                 } as SectionStyle);
               }}
             >
