@@ -443,7 +443,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     <img
                       src={
                         content.instagramReviews?.reviews?.review1?.highlightImageUrl ||
-                        'https://via.placeholder.com/40'
+                        ''''
                       }
                       alt="Highlight"
                       className="mr-3 h-10 w-10 rounded-lg object-cover"
@@ -476,7 +476,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                   <img
                     src={
                       content.instagramReviews?.reviews?.review2?.avatarUrl ||
-                      'https://via.placeholder.com/40'
+                      ''''
                     }
                     alt="Avatar"
                     className="mr-3 h-10 w-10 rounded-full object-cover"
@@ -517,7 +517,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                 <img
                   src={
                     content.instagramReviews?.reviews?.review2?.postImageUrl ||
-                    'https://via.placeholder.com/400x300'
+                    '''0x300'
                   }
                   alt={
                     content.instagramReviews?.reviews?.review2?.postImageAlt ||
@@ -553,7 +553,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     <img
                       src={
                         content.instagramReviews?.reviews?.review2?.highlightImageUrl ||
-                        'https://via.placeholder.com/40'
+                        ''''
                       }
                       alt="Highlight"
                       className="mr-3 h-10 w-10 rounded-lg object-cover"
@@ -586,7 +586,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                   <img
                     src={
                       content.instagramReviews?.reviews?.review3?.avatarUrl ||
-                      'https://via.placeholder.com/40'
+                      ''''
                     }
                     alt="Avatar"
                     className="mr-3 h-10 w-10 rounded-full object-cover"
@@ -627,7 +627,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                 <img
                   src={
                     content.instagramReviews?.reviews?.review3?.postImageUrl ||
-                    'https://via.placeholder.com/400x300'
+                    '''0x300'
                   }
                   alt={
                     content.instagramReviews?.reviews?.review3?.postImageAlt ||
@@ -663,7 +663,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     <img
                       src={
                         content.instagramReviews?.reviews?.review3?.highlightImageUrl ||
-                        'https://via.placeholder.com/40'
+                        ''''
                       }
                       alt="Highlight"
                       className="mr-3 h-10 w-10 rounded-lg object-cover"
