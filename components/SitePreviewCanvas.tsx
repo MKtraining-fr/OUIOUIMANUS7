@@ -443,7 +443,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     <img
                       src={
                         content.instagramReviews?.reviews?.review1?.highlightImageUrl ||
-                        ''''
+                        ''
                       }
                       alt="Highlight"
                       className="mr-3 h-10 w-10 rounded-lg object-cover"
@@ -476,7 +476,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                   <img
                     src={
                       content.instagramReviews?.reviews?.review2?.avatarUrl ||
-                      ''''
+                      ''
                     }
                     alt="Avatar"
                     className="mr-3 h-10 w-10 rounded-full object-cover"
@@ -553,7 +553,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     <img
                       src={
                         content.instagramReviews?.reviews?.review2?.highlightImageUrl ||
-                        ''''
+                        ''
                       }
                       alt="Highlight"
                       className="mr-3 h-10 w-10 rounded-lg object-cover"
@@ -586,7 +586,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                   <img
                     src={
                       content.instagramReviews?.reviews?.review3?.avatarUrl ||
-                      ''''
+                      ''
                     }
                     alt="Avatar"
                     className="mr-3 h-10 w-10 rounded-full object-cover"
@@ -663,7 +663,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                     <img
                       src={
                         content.instagramReviews?.reviews?.review3?.highlightImageUrl ||
-                        ''''
+                        ''
                       }
                       alt="Highlight"
                       className="mr-3 h-10 w-10 rounded-lg object-cover"
