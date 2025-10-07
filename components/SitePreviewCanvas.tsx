@@ -18,7 +18,7 @@ import {
 import { formatCurrencyCOP } from '../utils/formatIntegerAmount';
 import { withAppendedQueryParam } from '../utils/url';
 
-const DEFAULT_BRAND_LOGO = '/logo-brand.svg';
+const DEFAULT_BRAND_LOGO = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663122822197/MPAKZElDQoWYZSba.svg';
 
 export const resolveZoneFromElement = (element: EditableElementKey): EditableZoneKey => {
   if (element.startsWith('navigation.')) {
@@ -108,7 +108,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
             {renderEditableElement(
               'navigation.brandLogo',
               <img
-                src={content.navigation?.brandLogo?.url || DEFAULT_BRAND_LOGO}
+                src={content.navigation?.brandLogo?.url || 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663122822197/MPAKZElDQoWYZSba.svg'}
                 alt={content.navigation?.brandLogo?.alt || 'Logo'}
                 className="h-10 w-auto"
               />,
@@ -820,7 +820,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
           <div className="flex flex-col items-center justify-between space-y-6 md:flex-row md:space-y-0">
             <div className="flex items-center space-x-4">
               <img
-                src={content.navigation?.brandLogo?.url || DEFAULT_BRAND_LOGO}
+                src={content.navigation?.brandLogo?.url || 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663122822197/MPAKZElDQoWYZSba.svg'}
                 alt={content.navigation?.brandLogo?.alt || 'Logo'}
                 className="h-8 w-auto"
               />
