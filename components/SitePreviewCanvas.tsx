@@ -101,7 +101,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       {/* Navigation */}
       <header
         className="sticky top-0 z-10 border-b border-slate-200"
-        style={createBackgroundStyle(content.navigation?.style?.background || { type: 'color', color: '#ffffff', image: null })}
+      style={createBackgroundStyle(content.navigation?.style?.background || { type: 'color', color: '#ffffff', image: null })}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-8">
@@ -182,7 +182,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
       {/* Hero */}
       <section
         className="relative overflow-hidden bg-cover bg-center py-32 text-white"
-        style={createHeroBackgroundStyle(content.hero?.style || {}, content.hero?.backgroundImage?.url)}
+        style={createHeroBackgroundStyle(content.hero?.style, content.hero?.backgroundImage?.url)}
       >
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
