@@ -105,14 +105,15 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const value = e.target.value;
-    if (key === 'background' && style) {
+    const currentStyle = style || {};
+    if (key === 'background') {
       onChange({
-        ...style,
-        background: { ...(style.background || {}), color: value, type: 'color', image: null },
+        ...currentStyle,
+        background: { ...(currentStyle.background || {}), color: value, type: 'color', image: null },
       } as SectionStyle);
     } else {
       onChange({
-        ...style,
+        ...currentStyle,
         [key]: value,
       });
     }
@@ -121,7 +122,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
   const handleFontChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     onChange({
-      ...style,
+      ...(style || {}),
       fontFamily: value,
     });
   };
@@ -188,9 +189,10 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
         </label>
         <ImageUploader
           onUpload={(asset) => {
+            const currentStyle = style || {};
             onChange({
-              ...style,
-              background: { ...(style?.background || {}), image: asset.url, type: 'image', color: '' },
+              ...currentStyle,
+              background: { ...(currentStyle.background || {}), image: asset.url, type: 'image', color: '' },
             } as SectionStyle);
           }}
           assetType="background"
@@ -203,9 +205,10 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ style, onChange, className })
               type="button"
               className="text-sm text-red-600 hover:text-red-800"
               onClick={() => {
+                const currentStyle = style || {};
                 onChange({
-                  ...style,
-                  background: { ...(style?.background || {}), image: null, type: 'color' },
+                  ...currentStyle,
+                  background: { ...(currentStyle.background || {}), image: null, type: 'color' },
                 } as SectionStyle);
               }}
             >
@@ -482,9 +485,10 @@ const ElementEditor: React.FC<ElementEditorProps> = ({ element, content, onUpdat
         </label>
         <ImageUploader
           onUpload={(asset) => {
+            const currentStyle = style || {};
             onChange({
-              ...style,
-              background: { ...(style?.background || {}), image: asset.url, type: 'image', color: '' },
+              ...currentStyle,
+              background: { ...(currentStyle.background || {}), image: asset.url, type: 'image', color: '' },
             } as SectionStyle);
           }}
           assetType="background"
@@ -497,9 +501,10 @@ const ElementEditor: React.FC<ElementEditorProps> = ({ element, content, onUpdat
               type="button"
               className="text-sm text-red-600 hover:text-red-800"
               onClick={() => {
+                const currentStyle = style || {};
                 onChange({
-                  ...style,
-                  background: { ...(style?.background || {}), image: null, type: 'color' },
+                  ...currentStyle,
+                  background: { ...(currentStyle.background || {}), image: null, type: 'color' },
                 } as SectionStyle);
               }}
             >
