@@ -12,13 +12,14 @@ export const getHomeRedirectPath = (role: Role | null): string | null => {
   }
 
   const { homePage, permissions } = role;
+  const safePermissions = permissions || {};
 
-  if (homePage && isPermissionGranted(permissions?.[homePage])) {
+  if (homePage && isPermissionGranted(safePermissions[homePage])) {
     return homePage;
   }
 
   const fallbackLink = NAV_LINKS.find(link =>
-    isPermissionGranted(permissions?.[link.permissionKey]),
+    isPermissionGranted(safePermissions[link.permissionKey]),
   );
 
   if (fallbackLink) {

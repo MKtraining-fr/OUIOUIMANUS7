@@ -9,7 +9,7 @@ export interface Role {
   name: string;
   pin?: string;
   homePage?: string;
-  permissions: {
+  permissions?: {
     [key: string]: 'editor' | 'readonly' | 'none';
   };
 }
