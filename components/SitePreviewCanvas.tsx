@@ -246,7 +246,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               {renderEditableElement(
                 'about.image',
                 <img
-                  src={content.about?.image?.url || 'https://via.placeholder.com/600x400'}
+                  src={content.about?.image?.url || ''}
                   alt={content.about?.image?.alt || 'À propos de nous'}
                   className="rounded-lg object-cover shadow-lg"
                   style={{ maxHeight: '400px', width: '100%', objectFit: 'cover' }}
@@ -284,7 +284,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                   className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
                 >
                   <img
-                    src={product.image_url || 'https://via.placeholder.com/300x200'}
+                    src={product.image_url || ''}
                     alt={product.nom_produit}
                     className="h-48 w-full object-cover"
                   />
@@ -370,10 +370,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
                 {renderEditableElement(
                   'instagramReviews.reviews.review1.avatarUrl',
                   <img
-                    src={
-                      content.instagramReviews?.reviews?.review1?.avatarUrl ||
-                      'https://via.placeholder.com/40'
-                    }
+                    src={content.instagramReviews?.reviews?.review1?.avatarUrl || ''}
                     alt="Avatar"
                     className="mr-3 h-10 w-10 rounded-full object-cover"
                   />,
@@ -411,10 +408,7 @@ const SitePreviewCanvas: React.FC<SitePreviewCanvasProps> = ({
               {renderEditableElement(
                 'instagramReviews.reviews.review1.postImageUrl',
                 <img
-                  src={
-                    content.instagramReviews?.reviews?.review1?.postImageUrl ||
-                    'https://via.placeholder.com/400x300'
-                  }
+                  src={content.instagramReviews?.reviews?.review1?.postImageUrl || ''}
                   alt={
                     content.instagramReviews?.reviews?.review1?.postImageAlt ||
                     'Image de la publication'
